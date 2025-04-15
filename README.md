@@ -33,7 +33,7 @@ MediScan is an advanced medical report analysis tool that leverages AI to extrac
 
 ---
 
-##🛠️How to Use
+## 🛠️ How to Use
 
 ### On macOS
 

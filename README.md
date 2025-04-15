@@ -1,4 +1,4 @@
-# MediScan - Medical Report Reader
+# MediScan - Medical Report Reader ⚕️
 
 MediScan is an advanced medical report analysis tool that leverages AI to extract, summarize, and identify key medical entities from uploaded reports. Designed for healthcare professionals and patients alike, MediScan simplifies the process of understanding complex medical documents.
 
@@ -33,7 +33,7 @@ MediScan is an advanced medical report analysis tool that leverages AI to extrac
 
 ---
 
-## How to Use
+##🛠️How to Use
 
 ### On macOS
 
@@ -105,4 +105,4 @@ Contributions are welcome! Feel free to fork the repository and submit a pull re
 
 ## Contact
 
-For any questions or feedback, please contact [Your Name/Team] at [Your Email].
+For any questions or feedback, please contact [Gaurav Kapoor] at [gauravk7d0101@gmail.com].

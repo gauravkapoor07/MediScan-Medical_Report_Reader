@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan - Medical Report Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #06d6a0;
+            --warning-color: #ffbe0b;
+            --error-color: #ef476f;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+        
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease;
+        }
+        
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo i {
+            margin-right: 15px;
+            color: var(--accent-color);
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        section {
+            background: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            animation: slideUp 0.7s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        section:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        h2 i {
+            margin-right: 12px;
+            color: var(--accent-color);
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .upload-container {
+            width: 100%;
+            max-width: 550px;
+            border: 2px dashed #ceddef;
+            border-radius: var(--border-radius);
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 25px;
+            transition: var(--transition);
+            background-color: #f8faff;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: #f0f5ff;
+            transform: scale(1.02);
+        }
+        
+        .upload-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(0deg, rgba(240, 245, 255, 0.8) 0%, rgba(240, 245, 255, 0) 100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .upload-container:hover::after {
+            opacity: 1;
+        }
+        
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            transition: var(--transition);
+        }
+        
+        .upload-container:hover .upload-icon {
+            transform: translateY(-5px);
+            color: var(--secondary-color);
+        }
+        
+        label {
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+        
+        .file-types {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        input[type="file"] {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+        
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(59, 134, 255, 0.3);
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0) 100%);
+            transition: all 0.6s ease;
+        }
+        
+        button:hover::after {
+            left: 100%;
+        }
+        
+        button i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        
+        button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 10px 25px rgba(59, 134, 255, 0.5);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #b4c0d4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #loadingSpinner {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+            color: var(--primary-color);
+        }
+        
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 5px solid rgba(58, 134, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #loadingSpinner p {
+            margin-top: 10px;
+            font-weight: 500;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+        
+        .results-container {
+            margin-top: 40px;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .results-container.active {
+            opacity: 1;
+            height: auto;
+            animation: fadeIn 0.7s ease;
+        }
+        
+        .result-card {
+            background: #f8faff;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color);
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, 
+                rgba(58, 134, 255, 0.1) 0%, 
+                rgba(131, 56, 236, 0.05) 100%);
+            border-radius: 0 0 0 100%;
+            z-index: 0;
+        }
+        
+        .result-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        #summary {
+            border-left-color: var(--success-color);
+        }
+        
+        #entities {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        #summary h3 {
+            color: var(--success-color);
+        }
+        
+        #entities h3 {
+            color: var(--secondary-color);
+        }
+        
+        .result-card h3 i {
+            margin-right: 12px;
+            font-size: 1.6rem;
+        }
+        
+        .result-card div {
+            position: relative;
+            z-index: 1;
+            line-height: 1.7;
+            color: #495057;
+        }
+        
+        #entities ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        #entities li {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #entities li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--secondary-color);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+        
+        #entities li:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
+            transform: translateX(8px);
+        }
+        
+        #entities li:hover::before {
+            width: 6px;
+        }
+        
+        .entity-term {
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1.05rem;
+        }
+        
+        .entity-label {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            padding: 4px 12px;
+            background: rgba(131, 56, 236, 0.1);
+            border-radius: 30px;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(131, 56, 236, 0.15);
+            transition: var(--transition);
+        }
+        
+        #entities li:hover .entity-label {
+            background: rgba(131, 56, 236, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 500;
+            padding: 20px;
+            background: rgba(239, 71, 111, 0.1);
+            border-radius: var(--border-radius);
+            display: none;
+            border-left: 5px solid var(--error-color);
+        }
+        
+        .error-message i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+        
+        .file-preview {
+            max-width: 100%;
+            max-height: 250px;
+            margin: 20px 0;
+            display: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transition: var(--transition);
+            border: 3px solid white;
+        }
+        
+        .file-preview:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .file-info {
+            margin: 15px 0;
+            font-size: 0.95rem;
+            color: #6c757d;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+            transition: var (--transition);
+        }
+        
+        .file-info:hover {
+            background: rgba(0, 0, 0, 0.07);
+            transform: translateY(-2px);
+        }
+        
+        .file-info i {
+            margin-right: 8px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .benefits {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+        
+        .benefit-item {
+            flex: 1 1 300px;
+            text-align: center;
+            padding: 30px 25px;
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .benefit-item::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: rgba(58, 134, 255, 0.05);
+            border-radius: 50%;
+            z-index: -1;
+            transition: var(--transition);
+        }
+        
+        .benefit-item:hover::before {
+            transform: scale(6);
+            opacity: 0.8;
+        }
+        
+        .benefit-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            display: inline-block;
+        }
+        
+        .benefit-item:hover .benefit-icon {
+            transform: scale(1.2) rotate(10deg);
+            color: var(--secondary-color);
+        }
+        
+        .benefit-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+        
+        .benefit-desc {
+            font-size: 1rem;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px 0;
+            color: rgba(0, 0, 0, 0.7);
+            font-size: 0.95rem;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: rgba(58, 134, 255, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            section {
+                padding: 25px;
+            }
+            
+            .upload-container {
+                padding: 25px 15px;
+            }
+            
+            .benefit-item {
+                margin-bottom: 20px;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .result-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><i class="fas fa-heartbeat"></i> MediScan</div>
+            <p class="tagline">Advanced Medical Report Analysis Made Simple</p>
+        </header>
+        
+        <section>
+            <h2><i class="fas fa-file-medical"></i> Upload Your Report</h2>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="upload-container" id="dropArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <label for="fileInput">Drag & drop your medical report or click to browse</label>
+                    <p class="file-types">Supported formats: PDF, JPG, JPEG, PNG</p>
+                    <input type="file" id="fileInput" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
+                </div>
+                
+                <img id="filePreview" class="file-preview" alt="File preview">
+                <div id="fileInfo" class="file-info"></div>
+                <button type="button" id="uploadButton"><i class="fas fa-upload"></i> Analyze Report</button>
+            </form>
+
+            <div id="loadingSpinner">
+                <div class="spinner-container">
+                    <div class="spinner"></div>
+                    <p>Analyzing your medical report...</p>
+                </div>
+            </div>
+
+            <div id="error-message" class="error-message"></div>
+
+            <div class="results-container" id="resultsContainer">
+                <div class="result-card" id="summary"></div>
+                <div class="result-card" id="entities"></div>
+            </div>
+            
+            <div class="benefits">
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-bolt"></i></div>
+                    <h4 class="benefit-title">Instant Analysis</h4>
+                    <p class="benefit-desc">Get detailed insights from your reports in seconds</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h4 class="benefit-title">Secure & Private</h4>
+                    <p class="benefit-desc">Your medical data never leaves our secure servers</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fas fa-brain"></i></div>
+                    <h4 class="benefit-title">AI-Powered</h4>
+                    <p class="benefit-desc">Advanced algorithms identify medical terms with precision</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>&copy; 2025 MediScan. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadButton = document.getElementById('uploadButton');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const errorMessage = document.getElementById('error-message');
+            const summary = document.getElementById('summary');
+            const entities = document.getElementById('entities');
+            const preview = document.getElementById('filePreview');
+            const fileInfo = document.getElementById('fileInfo');
+            const dropArea = document.getElementById('dropArea');
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            // Handle drag and drop functionality
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.style.borderColor = '#3a86ff';
+                dropArea.style.backgroundColor = '#eef4ff';
+            }
+            
+            function unhighlight() {
+                dropArea.style.borderColor = '#ceddef';
+                dropArea.style.backgroundColor = '#f8faff';
+            }
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                fileInput.files = files;
+                handleFiles(files);
+            }
+            
+            // Make upload container clickable
+            dropArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // Preview file before upload
+            fileInput.addEventListener('change', function(e) {
+                handleFiles(this.files);
+            });
+            
+            function handleFiles(files) {
+                const file = files[0];
+                
+                if (!file) {
+                    preview.style.display = 'none';
+                    fileInfo.style.display = 'none';
+                    return;
+                }
+                
+                fileInfo.innerHTML = `<i class="fas fa-file-alt"></i> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                fileInfo.style.display = 'inline-flex';
+
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.style.display = 'none';
+                }
+            }
+
+            // Upload function
+            uploadButton.addEventListener('click', async function() {
+                // Clear previous results and errors
+                summary.innerHTML = '';
+                entities.innerHTML = '';
+                errorMessage.textContent = '';
+                errorMessage.classList.remove('show');
+                resultsContainer.classList.remove('active');
+
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    errorMessage.textContent = 'Please select a file first.';
+                    errorMessage.classList.add('show');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+                
+                if (!validTypes.includes(file.type)) {
+                    errorMessage.textContent = 'Please upload a PDF, JPG, JPEG, or PNG file.';
+                    errorMessage.classList.add('show');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                loadingSpinner.style.display = 'block';
+                uploadButton.disabled = true;
+
+                try {
+                    const response = await fetch('http://127.0.0.1:8000/upload/', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    // Show results container
+                    resultsContainer.classList.add('active');
+
+                    // Display results - Show summary first and hide extracted text
+                    if (data.summary) {
+                        summary.innerHTML = `<h3><i class="fas fa-book"></i> Summary</h3><div>${data.summary}</div>`;
+                    } else {
+                        summary.innerHTML = `<h3><i class="fas fa-book"></i> Summary</h3><div>No summary could be generated for this document.</div>`;
+                    }
+                    
+                    if (data.medical_entities && Object.keys(data.medical_entities).length > 0) {
+                        let entitiesHTML = '<h3><i class="fas fa-list-ul"></i> Medical Entities</h3><ul>';
+                        for (const [term, label] of Object.entries(data.medical_entities)) {
+                            entitiesHTML += `<li><span class="entity-term">${term}</span><span class="entity-label">${label}</span></li>`;
+                        }
+                        entitiesHTML += '</ul>';
+                        entities.innerHTML = entitiesHTML;
+                    } else {
+                        entities.innerHTML = '<h3><i class="fas fa-info-circle"></i> No Entities Found</h3><p>No medical entities were detected in this document.</p>';
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    errorMessage.textContent = `Error: ${error.message}`;
+                    errorMessage.classList.add('show');
+                    
+                    // More detailed error messages
+                    if (error.message.includes('Failed to fetch')) {
+                        errorMessage.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Connection Error: Could not reach the server.<br>
+                        1. Ensure your FastAPI server is running<br>
+                        2. Check the URL (currently set to http://127.0.0.1:8000/upload/)<br>
+                        3. Verify CORS is enabled on the server`;
+                    }
+                } finally {
+                    loadingSpinner.style.display = 'none';
+                    uploadButton.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
